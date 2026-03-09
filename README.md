@@ -10,7 +10,7 @@ A full-stack options analytics suite combining a multi-model pricing engine with
 | Component | Stack | Link |
 |-----------|-------|------|
 | Options Pricing Calculator | React, Recharts | [options-pricing-calculator.vercel.app](https://options-pricing-calculator.vercel.app) |
-| Live IV Surface | Python, Streamlit, Polygon.io | [volatility-surface-mp.streamlit.app](https://volatility-surface-mp.streamlit.app) |
+| Live IV Surface | Python, Streamlit, yfinance | [volatility-surface-mp.streamlit.app](https://volatility-surface-mp.streamlit.app) |
 
 ---
 
@@ -27,7 +27,7 @@ A full-stack options analytics suite combining a multi-model pricing engine with
 - Interactive spot price and volatility sensitivity charts
 
 **Live IV Surface**
-- Real-time options chain via Polygon.io API (falls back to demo mode)
+- Real-time options chain via yfinance; Polygon.io integration available for institutional data feeds
 - Moneyness filter: 92%–108% of spot; IV bounds: 5%–80%
 - 3D volatility surface, front-month skew, ATM term structure
 
@@ -37,8 +37,8 @@ A full-stack options analytics suite combining a multi-model pricing engine with
 ```
 ├── src/                          # Pricing engine (Black-Scholes, Monte Carlo, Binomial Tree)
 ├── App.js                        # React frontend
-├── streamlit_app.py              # Live IV surface (Streamlit + Polygon.io)
-├── polygon_volatility_surface.py # Matplotlib-based surface (local use)
+├── streamlit_app.py              # Live IV surface (Streamlit + yfinance)
+├── polygon_volatility_surface.py # Polygon.io integration variant
 ├── alpaca_volatility_surface.py  # Alpaca API variant
 ├── live_volatility_surface.py    # Real-time streaming surface
 └── requirements.txt
@@ -55,6 +55,5 @@ npm start
 **Streamlit IV Surface**
 ```bash
 pip install -r requirements.txt
-export POLYGON_API_KEY=your_key
 streamlit run streamlit_app.py
 ```
