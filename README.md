@@ -1,30 +1,60 @@
-# Options Pricing Calculator
+# Options Pricing Engine & Live Implied Volatility Surface
 
-An interactive web application for calculating option prices and visualizing Greeks. Built with React and Recharts.
+[![React](https://img.shields.io/badge/React-18-blue)](https://reactjs.org)
+[![Python](https://img.shields.io/badge/Python-3.9+-blue)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Live-red)](https://volatility-surface-mp.streamlit.app)
+[![Vercel](https://img.shields.io/badge/Vercel-Live-black)](https://options-pricing-calculator.vercel.app)
+
+A full-stack options analytics suite combining a multi-model pricing engine with a live implied volatility surface visualization tool.
+
+| Component | Stack | Link |
+|-----------|-------|------|
+| Options Pricing Calculator | React, Recharts | [options-pricing-calculator.vercel.app](https://options-pricing-calculator.vercel.app) |
+| Live IV Surface | Python, Streamlit, Polygon.io | [volatility-surface-mp.streamlit.app](https://volatility-surface-mp.streamlit.app) |
+
+---
 
 ## Features
-- **Real-time Calculation**: Instant pricing using Black-Scholes model.
-- **Greeks Visualization**: Interactive charts for Delta, Gamma, Theta, Vega, and Rho.
-- **Responsive Design**: Clean interface built with modern React components.
 
-## Tech Stack
-- **Frontend**: React.js
-- **Visualization**: Recharts
-- **Icons**: Lucide React
+**Pricing Models**
+- Black-Scholes closed-form solution for European options
+- Monte Carlo simulation (Box-Muller GBM sampling, 10,000 paths)
+- Binomial tree with American early-exercise support (CRR parameterization)
 
-## Getting Started
+**Greeks & Risk**
+- Full Greeks: Δ, Γ, ν, Θ, ρ
+- Newton-Raphson implied volatility solver (converges to 10⁻⁶ tolerance)
+- Interactive spot price and volatility sensitivity charts
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+**Live IV Surface**
+- Real-time options chain via Polygon.io API (falls back to demo mode)
+- Moneyness filter: 92%–108% of spot; IV bounds: 5%–80%
+- 3D volatility surface, front-month skew, ATM term structure
 
-2. Start the development server:
-   ```bash
-   npm start
-   ```
+---
 
-3. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## File Structure
+```
+├── src/                          # Pricing engine (Black-Scholes, Monte Carlo, Binomial Tree)
+├── App.js                        # React frontend
+├── streamlit_app.py              # Live IV surface (Streamlit + Polygon.io)
+├── polygon_volatility_surface.py # Matplotlib-based surface (local use)
+├── alpaca_volatility_surface.py  # Alpaca API variant
+├── live_volatility_surface.py    # Real-time streaming surface
+└── requirements.txt
+```
 
-## License
-MIT License
+## Usage
+
+**React Pricing Calculator**
+```bash
+npm install
+npm start
+```
+
+**Streamlit IV Surface**
+```bash
+pip install -r requirements.txt
+export POLYGON_API_KEY=your_key
+streamlit run streamlit_app.py
+```
