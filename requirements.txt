@@ -1,4 +1,6 @@
 streamlit
-plotly
-polygon-api-client
 yfinance
+plotly
+pandas
+numpy
+scipy
