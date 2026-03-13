@@ -46,24 +46,19 @@ const monteCarloSimulation = (S, K, T, r, sigma, type = 'call', simulations = 10
   let payoffSum = 0;
 
   for (let i = 0; i < simulations; i++) {
-    let St = S;
-    const pathPrices = [St];
+    // Antithetic variates: run Z and -Z together, halves variance
+    let St1 = S, St2 = S;
 
     for (let j = 0; j < steps; j++) {
       const Z = Math.sqrt(-2 * Math.log(Math.random())) * Math.cos(2 * Math.PI * Math.random());
-      St *= Math.exp((r - 0.5 * sigma ** 2) * dt + sigma * Math.sqrt(dt) * Z);
-      pathPrices.push(St);
+      const drift = (r - 0.5 * sigma ** 2) * dt;
+      const diffusion = sigma * Math.sqrt(dt);
+      St1 *= Math.exp(drift + diffusion * Z);
+      St2 *= Math.exp(drift - diffusion * Z);
     }
 
-    const ST = pathPrices[pathPrices.length - 1];
-    let payoff = 0;
-
-    if (type === 'call')         payoff = Math.max(ST - K, 0);
-    else if (type === 'put')     payoff = Math.max(K - ST, 0);
-    else if (type === 'asian_call') payoff = Math.max((pathPrices.reduce((a,b)=>a+b,0)/pathPrices.length) - K, 0);
-    else if (type === 'asian_put')  payoff = Math.max(K - (pathPrices.reduce((a,b)=>a+b,0)/pathPrices.length), 0);
-
-    payoffSum += payoff;
+    const payoff = (ST) => type === 'call' ? Math.max(ST - K, 0) : Math.max(K - ST, 0);
+    payoffSum += (payoff(St1) + payoff(St2)) / 2;
   }
 
   return Math.exp(-r * T) * (payoffSum / simulations);
